@@ -32,12 +32,12 @@ const contractAddress = "0xE086044a301DdE9910154cd8Bf733c97E9E51E43";
 const htlc = new web3.eth.Contract(abi, contractAddress);
 
 // ロックコントラクトの情報取得（Ganacheからでも分かる）
-const contractInfo = async (contractId) => {
+const contractInfo = (contractId) => {
     return htlc.methods.getContract(contractId).call()
 }
 
 // 新しいロックコントラクトの作成（Symbolで言うシークレットロック）
-const newContract = async (sender, receiver, amount) => {
+const newContract = (sender, receiver, amount) => {
     const hashPair = newSecretHashPair()
     const oneFinney = web3.utils.toWei(web3.utils.toBN(amount), 'finney')
     htlc.methods.newContract(
@@ -62,7 +62,7 @@ const newContract = async (sender, receiver, amount) => {
 }
 
 // Secretを使って引き出し（Symbolで言うシークレットプルーフ）
-const withDraw = async (contractId, secret, receiver)=> {
+const withDraw = (contractId, secret, receiver)=> {
     htlc.methods.withdraw(
         contractId,
         secret,
@@ -83,7 +83,7 @@ const withDraw = async (contractId, secret, receiver)=> {
 (async()=>{
     const accounts = await web3.eth.getAccounts();
     console.log('accounts: ', accounts);
-    //newContract(accounts[0], accounts[1], 1);
-    console.log(await contractInfo("0x18d80f36686d946f6357fbba0b77696048eeb12aae341058f76a6486c54b2873"));
-    //withDraw("0x18d80f36686d946f6357fbba0b77696048eeb12aae341058f76a6486c54b2873", "0x93c45674bbc165f3b755b8931f3fb5b5df9655507409cdb35795ffe4e2aae52f", accounts[1]);
+    newContract(accounts[0], accounts[1], 1);
+    //console.log(await contractInfo("0x18d80f36686d946f6357fbba0b77696048eeb12aae341058f76a6486c54b2873"));
+    //withDraw("0x5d98283e5a6c31934023e0abf1dad74931e35dfec05ef7be564de5520552c217", "0x2bfeae1bc34e417566e875ea7ee15f7e6ef0065be01a66310605b57fefc92aed", accounts[1]);
 })();
