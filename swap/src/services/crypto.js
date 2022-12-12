@@ -1,4 +1,13 @@
 import crypto from 'crypto';
+import { sha3_256 } from '../../symbol/sdk/javascript/node_modules/@noble/hashes/sha3.js';
+
+export const calcCompositeHash = (secret, address) => {
+    return sha3_256
+        .create()
+        .update(secret)
+        .update(address)
+        .digest();
+}
 
 function bufToStr(b) {
     return '0x' + b.toString('hex')

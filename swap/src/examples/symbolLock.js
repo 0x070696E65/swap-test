@@ -11,8 +11,13 @@ const symbolService = new SymbolService(netWork, "NODE_URL");
 
 symbolService.secretLockTransaction(
     'PRIVATE_KEY',
-    'RECEIVER_PLAIN_ADDRESS',
+    'RECIPIENT_ADDRESS',
     0x72C0212E67A08BCEn, // mosaicId
     1n, // amount
     5760n // duration
 ).then(r=>console.log(r));
+
+(async()=>{
+    symbolService.getLockTransaction('COMPOSITE_HASH')
+    .then(async(r)=>console.log(await r.json()));
+})()

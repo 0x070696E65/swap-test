@@ -1,6 +1,6 @@
 import sdk from '../../symbol/sdk/javascript/src/index.js';
 import fetch from 'node-fetch';
-import { newSecretHashPair } from './crypto.js';
+import { newSecretHashPair, calcCompositeHash } from './crypto.js';
 
 export class SymbolService {
     facade;
@@ -14,16 +14,19 @@ export class SymbolService {
         const keyPair = new sdk.symbol.KeyPair(privateKey);
         const hashPair = newSecretHashPair()
         const deadline = new sdk.symbol.NetworkTimestamp(this.facade.network.fromDatetime(Date.now())).addHours(2).timestamp;
+        const secret = hashPair.hash.toUpperCase().replace('0X', '');
         const secretLockTransaction = this.facade.transactionFactory.create({
             type: 'secret_lock_transaction_v1',
             mosaic: { mosaicId, amount },
             signerPublicKey: keyPair.publicKey,
             duration,
             recipientAddress,
-            secret: hashPair.hash.toUpperCase().replace('0X', ''),
+            secret,
             hashAlgorithm: 'hash_256',
             deadline
         });
+        
+        const compositeHash = sdk.utils.uint8ToHex(this.compositeHash(sdk.utils.hexToUint8(secret), new sdk.facade.SymbolFacade.Address(recipientAddress).bytes));
         secretLockTransaction.fee = new sdk.symbol.Amount(BigInt(secretLockTransaction.size * 100));
         const signature = this.facade.signTransaction(keyPair, secretLockTransaction);
         const jsonPayload = this.facade.transactionFactory.constructor.attachSignature(secretLockTransaction, signature);
@@ -32,7 +35,11 @@ export class SymbolService {
             body: jsonPayload  ,
             headers: {'Content-Type': 'application/json'}
         })
-        return [await res.json(), hashPair];
+        return {
+            message: await res.json(),
+            hashPair,
+            compositeHash
+        }
     }
 
     secretProofTransaction = async (privateKeyHex, recipientAddress, proof, secret) =>{
@@ -56,6 +63,23 @@ export class SymbolService {
             body: jsonPayload  ,
             headers: {'Content-Type': 'application/json'}
         })
-        return [await res.json()];
+        return {
+            message: await res.json(),
+            hashPair: {
+                proof,
+                secret
+            }
+        }
+    }
+
+    getLockTransaction = async (compositeHash) => {
+        return await fetch(this.node + '/lock/secret/' + compositeHash, {
+            method: 'get',
+            headers: {'Content-Type': 'application/json'}
+        })
+    }
+
+    compositeHash = (secret, address) => {
+        return calcCompositeHash(secret, address)
     }
 }

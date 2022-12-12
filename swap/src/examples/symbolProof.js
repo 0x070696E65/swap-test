@@ -11,7 +11,7 @@ const symbolService = new SymbolService(netWork, "NODE_URL");
 
 symbolService.secretProofTransaction(
     'PRIVATE_KEY',
-    'RECEIVER_PLAIN_ADDRESS',
+    'RECIPIENT_ADDRESS',
     'PROOF', // 0xf816755c282a446459154e661edddb2eba2de9fd5879f4f271039cd744c5d163
     'SECRET', // 0x44a4bba5f16a91281904d5fef33770a39747dec8cbadfb0619a58e65f57d5c24
 ).then(r=>console.log(r));

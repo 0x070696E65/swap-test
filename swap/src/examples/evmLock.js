@@ -1,6 +1,6 @@
 import { EvmService } from '../services/evm.js';
 import { ethTestnet } from '../services/config.js';
-// import { polygonTestnet } from '../services/config.js';
+import { polygonTestnet } from '../services/config.js';
 
 const evmService = new EvmService(ethTestnet);
 
