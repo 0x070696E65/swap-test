@@ -27,7 +27,8 @@
   "homepage": "https://github.com/chatch/hashed-timelock-contract-ethereum#README.md",
   "dependencies": {
     "@truffle/contract": "^4.2.14",
-    "openzeppelin-solidity": "^2.5.1"
+    "openzeppelin-solidity": "^2.5.1",
+    "@truffle/hdwallet-provider": "^2.0.8"
   },
   "devDependencies": {
     "eslint": "^7.5.0",
