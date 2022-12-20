@@ -14,8 +14,6 @@ const account2 = evmService.web3.eth.accounts.wallet[1].address
 
 evmService.newContract(evmService.htlcContract,account1, account2, 1, 3600, 1000000)
 .then(r=>console.log(r))
-
-/*
-evmService.contractInfo(evmService.htlcContract, 'CONTRACT_ID')
-.then(r=>console.log(r))
-*/
+//
+/* evmService.contractInfo(evmService.htlcContract, 'CONTRACT_ID')
+.then(r=>console.log(r)) */
